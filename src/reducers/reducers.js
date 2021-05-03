@@ -31,6 +31,15 @@ const ui = handleActions(
         commentBranch: { ...commentBranch, [id]: status },
       };
     },
+    [actions.setBranchStatus](
+      { loadingStatus },
+      { payload: { commentBranch } }
+    ) {
+      return {
+        loadingStatus,
+        commentBranch,
+      };
+    },
   },
   { loadingStatus: "loading", commentBranch: {} }
 );

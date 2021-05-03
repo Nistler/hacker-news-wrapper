@@ -1,45 +1,58 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import * as actions from "../actions/actions";
-import { getNewStories, getItem } from "../services/hacker-news-api";
+import { getNewStories } from "../services/hacker-news-api";
 import StoryPreview from "./StoryPreview.jsx";
-//import Story from "./Story.jsx";
-//import { stories as demoStories } from "../__fixtures__/stories";
+import LazyLoad from "react-lazyload";
+import Placeholder from "./Placeholder";
 
 const mapStateToProps = (state) => {
-  return { stories: state.stories };
+  return { stories: state.stories, ui: state.ui };
 };
 
 const actionCreators = {
   addLatestStories: actions.addLatestStories,
-  addStory: actions.addStory,
 };
 
-const HackNews = ({ stories, addLatestStories, addStory }) => {
+const HackNews = ({ stories, addLatestStories }) => {
+  const [seconds, setSeconds] = useState(59);
+
+  // >> TIMER
+
+  useEffect(() => {
+    if (seconds > 0) {
+      setTimeout(() => setSeconds(seconds - 1), 1000);
+    } else {
+      handleUpdateStoriesIDs();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setSeconds, seconds]);
+
+  // << TIMER
+
   const handleUpdateStoriesIDs = async () => {
     const latestStoriesIDs = await getNewStories();
-    addLatestStories({ latestStoriesIDs: latestStoriesIDs.slice(0, 30) });
-  };
-
-  const handleRequest = () => {
-    const promise = stories.latestStoriesIDs.map((id) => getItem(id));
-    Promise.all(promise).then((stories) => addStory({ stories }));
+    addLatestStories({ latestStoriesIDs: latestStoriesIDs.slice(0, 100) });
+    setSeconds(59);
   };
 
   const renderStories = () =>
-    stories.stories.map((story) => (
-      <StoryPreview key={story.id} id={story.id} story={story} />
+    stories.latestStoriesIDs.map((storyID) => (
+      <LazyLoad key={storyID} placeholder={<Placeholder />} offset={300}>
+        <StoryPreview key={storyID} id={storyID} />
+      </LazyLoad>
     ));
 
   return (
-    <div>
-      <p>Hello</p>
-      <button onClick={handleUpdateStoriesIDs}>Update Stories</button>
-      <button onClick={handleRequest}>Request</button>
-      <hr />
-      {renderStories()}
-      {/*<Story story={demoStories[15]} />*/}
-    </div>
+    <>
+      <header>
+        <h1>Hacker news</h1>
+        <button onClick={handleUpdateStoriesIDs}>Update Stories</button>
+        <div>{seconds}</div>
+        <hr />
+      </header>
+      <main>{renderStories()}</main>
+    </>
   );
 };
 

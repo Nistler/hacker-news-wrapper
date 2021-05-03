@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getItem } from "../services/hacker-news-api";
 import * as actions from "../actions/actions";
 import { connect } from "react-redux";
+import LazyLoad from "react-lazyload";
 
 const mapStateToProps = (state) => {
   return { ui: state.ui };
@@ -9,30 +10,29 @@ const mapStateToProps = (state) => {
 
 const actionCreators = { changeBranchStatus: actions.changeBranchStatus };
 
-const Comment = ({ comment, changeBranchStatus, ui }) => {
+const Comment = ({ commentID, changeBranchStatus, ui }) => {
   const [kids, setKids] = useState([]);
+  const [comment, setComment] = useState({});
   const [requestStatus, setRequestStatus] = useState("finished");
 
   useEffect(() => {
-    const getRequest = () => {
-      if (!comment.kids) {
-        return;
-      }
+    const getRequest = async () => {
+      setRequestStatus("fetching");
+      const data = await getItem(commentID);
+      setComment(data);
       if (
-        !ui.commentBranch[comment.id] ||
-        ui.commentBranch[comment.id] === "closed"
+        !data ||
+        !data.kids ||
+        !ui.commentBranch[data.id] ||
+        ui.commentBranch[data.id] === "closed"
       ) {
         return;
       }
-      setRequestStatus("fetching");
-      const promise = comment.kids.map((id) => getItem(id));
-      Promise.all(promise)
-        .then((data) => setKids(data))
-        .then(() => setRequestStatus("finished"));
+      setKids(data.kids);
     };
 
-    getRequest();
-  }, [comment.id, comment.kids, ui]);
+    getRequest().then(() => setRequestStatus("finished"));
+  }, [commentID, ui]);
 
   const createMarkup = () => {
     return { __html: comment.text };
@@ -46,13 +46,15 @@ const Comment = ({ comment, changeBranchStatus, ui }) => {
       ui.commentBranch[comment.id] &&
       ui.commentBranch[comment.id] === "opened"
     ) {
-      return kids.map((kid) => (
-        <Comment
-          key={kid.id}
-          comment={kid}
-          changeBranchStatus={changeBranchStatus}
-          ui={ui}
-        />
+      return kids.map((kidID) => (
+        <LazyLoad key={kidID}>
+          <Comment
+            key={kidID}
+            commentID={kidID}
+            changeBranchStatus={changeBranchStatus}
+            ui={ui}
+          />
+        </LazyLoad>
       ));
     }
   };
@@ -62,6 +64,10 @@ const Comment = ({ comment, changeBranchStatus, ui }) => {
       !ui.commentBranch[comment.id] || ui.commentBranch[comment.id] === "closed"
         ? "opened"
         : "closed";
+    sessionStorage.setItem(
+      "branchesStatus",
+      JSON.stringify({ ...ui.commentBranch, [comment.id]: status })
+    );
     changeBranchStatus({ id: comment.id, status });
   };
 
@@ -73,13 +79,13 @@ const Comment = ({ comment, changeBranchStatus, ui }) => {
 
   return (
     comment && (
-      <div style={style}>
+      <article style={style}>
         <h3>Author: {comment.by}</h3>
         {comment.deleted ? (
           <h4>[commentary deleted]</h4>
         ) : (
           <>
-            <p>Date: {comment.time}</p>
+            <time>Date: {comment.time}</time>
             <div dangerouslySetInnerHTML={createMarkup()} />
           </>
         )}
@@ -99,7 +105,7 @@ const Comment = ({ comment, changeBranchStatus, ui }) => {
           <button disabled>+</button>
         )}
         {handleKids()}
-      </div>
+      </article>
     )
   );
 };
