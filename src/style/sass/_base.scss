@@ -1,0 +1,53 @@
+$dark-grey: #151515;
+$grey: #efefef;
+$black: #000;
+
+@keyframes MoveUpInitial {
+  to {
+    transform: translate3d(0,-105%,0);
+  }
+}
+
+@keyframes MoveUpEnd {
+  from {
+    transform: translate3d(0,100%,0);
+  }
+  to {
+    transform: translate3d(0,0,0);
+  }
+}
+
+@mixin reset_margin {
+  margin: 0;
+}
+
+@mixin fl-cen {
+  display: flex;
+  align-items: center;
+}
+
+@mixin line {
+  content: '';
+  margin-top: 17px;
+  margin-right: auto;
+  margin-left: auto;
+  border-bottom: 1px solid $dark-grey;
+  width: 80%;
+  max-width: 600px;
+  display: block;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+
+  &-track {
+    background: $grey;
+  }
+
+  &-thumb {
+    background: $dark-grey;
+    &:window-inactive {
+      background: $dark-grey;
+    }
+  }
+}

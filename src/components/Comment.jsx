@@ -3,6 +3,7 @@ import { getItem } from "../services/hacker-news-api";
 import * as actions from "../actions/actions";
 import { connect } from "react-redux";
 import LazyLoad from "react-lazyload";
+import { timestampToTime } from "../utils/normalization";
 
 const mapStateToProps = (state) => {
   return { ui: state.ui };
@@ -71,38 +72,40 @@ const Comment = ({ commentID, changeBranchStatus, ui }) => {
     changeBranchStatus({ id: comment.id, status });
   };
 
-  const style = {
-    borderLeft: "3px solid rgb(206, 206, 206)",
-    paddingLeft: "10px",
-    marginLeft: "40px",
-  };
+  const btnState =
+    !ui.commentBranch[comment.id] || ui.commentBranch[comment.id] === "closed";
 
   return (
     comment && (
-      <article style={style}>
-        <h3>Author: {comment.by}</h3>
+      <article className="comment">
+        <div className="comment-info">
+          <span>By: </span>
+          {comment.by}
+          <span> Posted: </span>
+          {timestampToTime(comment.time)}
+        </div>
         {comment.deleted ? (
           <h4>[commentary deleted]</h4>
         ) : (
-          <>
-            <time>Date: {comment.time}</time>
-            <div dangerouslySetInnerHTML={createMarkup()} />
-          </>
+          <div
+            className="comment-text"
+            dangerouslySetInnerHTML={createMarkup()}
+          />
         )}
-        {JSON.stringify(comment.kids)}
-        <p>ID: {comment.id}</p>
         {comment.kids ? (
           <button
+            className="button button-animated button-comment"
             onClick={handleChangeBranchStatus}
             disabled={requestStatus === "fetching"}
           >
-            {!ui.commentBranch[comment.id] ||
-            ui.commentBranch[comment.id] === "closed"
-              ? "+"
-              : "-"}
+            <span>
+              <span>{btnState ? "Show replies" : "Hide replies"}</span>
+            </span>
           </button>
         ) : (
-          <button disabled>+</button>
+          <button className="button btn-disabled" disabled>
+            expand replies
+          </button>
         )}
         {handleKids()}
       </article>

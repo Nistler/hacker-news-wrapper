@@ -18,13 +18,17 @@ const HackNews = ({ stories, addLatestStories }) => {
   const [seconds, setSeconds] = useState(59);
 
   // >> TIMER
-
   useEffect(() => {
+    let timer;
     if (seconds > 0) {
-      setTimeout(() => setSeconds(seconds - 1), 1000);
+      timer = setTimeout(() => setSeconds(seconds - 1), 1000);
     } else {
-      handleUpdateStoriesIDs();
+      handleUpdateStoriesIDs().then(() => setSeconds(59));
     }
+
+    return () => {
+      clearTimeout(timer);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setSeconds, seconds]);
 
@@ -44,15 +48,20 @@ const HackNews = ({ stories, addLatestStories }) => {
     ));
 
   return (
-    <>
-      <header>
-        <h1>Hacker news</h1>
-        <button onClick={handleUpdateStoriesIDs}>Update Stories</button>
-        <div>{seconds}</div>
-        <hr />
-      </header>
-      <main>{renderStories()}</main>
-    </>
+    <main>
+      <h2>LATEST STORIES</h2>
+      <div className="refresh-btn-wrapper">
+        <button
+          className="button button-animated"
+          onClick={handleUpdateStoriesIDs}
+        >
+          <span>
+            <span>Refresh {seconds}</span>
+          </span>
+        </button>
+      </div>
+      <section className="stories-list">{renderStories()}</section>
+    </main>
   );
 };
 

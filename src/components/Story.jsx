@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { getItem } from "../services/hacker-news-api";
 import Comment from "../components/Comment.jsx";
-import { Link } from "react-router-dom";
 import Placeholder from "./Placeholder";
 import LazyLoad from "react-lazyload";
+import { timestampToTime } from "../utils/normalization";
 
 const Story = ({
   match: {
@@ -18,11 +18,15 @@ const Story = ({
   // >> TIMER
 
   useEffect(() => {
+    let timer;
     if (seconds > 0) {
-      setTimeout(() => setSeconds(seconds - 1), 1000);
+      timer = setTimeout(() => setSeconds(seconds - 1), 1000);
     } else {
-      handleUpdateComments();
+      handleUpdateComments().then(() => setSeconds(59));
     }
+    return () => {
+      clearTimeout(timer);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setSeconds, seconds]);
 
@@ -59,28 +63,47 @@ const Story = ({
   return (
     story && (
       <main>
-        <nav>
-          <Link to={`/`}>
-            <button>Back to news</button>
-          </Link>
-          <button onClick={handleUpdateComments}>Update comments</button>
-          <div>{seconds}</div>
-        </nav>
         {requestStatus === "fetching" ? (
-          <h1>Loading</h1>
+          <h2>Loading</h2>
         ) : (
           <article>
-            <p>
-              <a href={story.url}>Source</a>
-            </p>
-            <h1>{story.title}</h1>
-            <time>Date: {story.time}</time>
-            <div>Author: {story.by}</div>
-            <div>Comments: {story.descendants}</div>
-            <hr />
-            <section>
-              <h2>Comments</h2>
-              {renderComments()}
+            <h2>
+              {story.title} (
+              <a className="nav-link link-source" href={story.url}>
+                SOURCE
+              </a>
+              )
+            </h2>
+            <section className="story-info justify-center">
+              <div>
+                <span>Score:</span> {story.score}
+              </div>
+              <div>
+                <span>By:</span> {story.by}
+              </div>
+              <div>
+                <span>Posted:</span> {timestampToTime(story.time)}
+              </div>
+            </section>
+            <div className="comments-header">
+              <div className="comment-counter-wrapper">
+                <span>Comments: {story.descendants}</span>
+              </div>
+              <button
+                className="button button-animated"
+                onClick={handleUpdateComments}
+              >
+                <span>
+                  <span>Refresh {seconds}</span>
+                </span>
+              </button>
+            </div>
+            <section className="comments-list">
+              {comments.length > 0 ? (
+                renderComments()
+              ) : (
+                <h3 className="h3">No comments yet</h3>
+              )}
             </section>
           </article>
         )}

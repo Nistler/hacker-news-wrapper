@@ -1,0 +1,187 @@
+@import "base";
+
+body {
+  @include reset_margin;
+  overflow-y: scroll;
+  font-family: 'Roboto', sans-serif, 'Arial';
+}
+
+#root {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+header {
+  text-align: center;
+  margin-top: 15px;
+
+  &:after {
+    @include line;
+  }
+}
+
+main {
+  flex: 1;
+}
+
+footer {
+  text-align: center;
+  margin: 40px 15px 20px 15px;
+
+  &:before {
+    @include line;
+  }
+}
+
+pre {
+  overflow-x: auto;
+}
+
+h1 {
+  margin: 5px;
+}
+
+h2 {
+  margin-bottom: 15px;
+  margin-top: 47px;
+  padding-right: 5px;
+  padding-left: 5px;
+  text-align: center;
+}
+
+h3 {
+  margin: 0 0 0 10px;
+
+  @media (min-width: 930px) {
+    @include reset_margin;
+  }
+}
+
+.h3 {
+  margin: 10px;
+}
+
+.nav-center {
+  display: flex;
+  justify-content: center;
+}
+
+.comment-counter-wrapper {
+  margin: 0 10px;
+  background-color: $grey;
+  border: 1px solid $black;
+  color: $black;
+  padding: 0.5rem 0.5rem;
+  cursor: default;
+
+  @media (min-width: 930px){
+    @include reset_margin;
+  }
+}
+
+.comments-header {
+  @include fl-cen;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 16px;
+
+  @media (min-width: 930px) {
+    width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.comment-info {
+  font-size: 1.1em;
+  padding: 5px;
+  margin: 10px 0;
+  background-color: $grey;
+
+  span {
+    font-weight: bold;
+  }
+}
+
+.comment {
+  padding: 5px 0 5px 20px;
+}
+
+.comment-text {
+  padding: 0 10px;
+}
+
+.comments-list {
+  @include fl-cen;
+  flex-direction: column;
+  padding: 0 10px;
+
+  .lazyload-wrapper {
+    width: 100%;
+    @media (min-width: 930px) {
+      width: 900px;
+    }
+  }
+
+  & > .lazyload-wrapper > .comment {
+    padding: 5px 0;
+  }
+}
+
+.story-preview {
+  padding: 5px;
+}
+
+.stories-list {
+  @include fl-cen;
+  flex-direction: column;
+  margin: 10px;
+
+  .lazyload-wrapper {
+    width: 100%;
+
+    &:nth-child(2n-1) {
+      background-color: $grey;
+    }
+
+    @media (min-width: 930px) {
+      width: 900px;
+    }
+  }
+}
+
+.story-info {
+  display: flex;
+  flex-wrap: wrap;
+
+  div {
+    margin-left: 5px;
+    margin-right: 5px;
+    font-size: 0.9em;
+  }
+
+  span {
+    font-weight: bold;
+  }
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.refresh-btn-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+
+  @media (min-width: 930px) {
+    width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.comment-btn {
+  margin: 10px 0 0 0;
+}
