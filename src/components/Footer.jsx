@@ -6,6 +6,8 @@ const Footer = () => {
       <h3 className="h3">Hacker News API wrapper</h3>
       <div>
         <a
+          target="_blank"
+          rel="noopener noreferrer"
           className="link"
           href="https://github.com/Nistler/hacker-news-wrapper/"
         >

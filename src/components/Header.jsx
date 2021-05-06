@@ -10,6 +10,8 @@ const Header = () => {
           STORIES
         </Link>
         <a
+          target="_blank"
+          rel="noopener noreferrer"
           className="nav-link"
           href="https://github.com/Nistler/hacker-news-wrapper"
         >
