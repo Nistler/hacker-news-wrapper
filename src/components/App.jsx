@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { HashRouter as Router, Switch, Route } from "react-router-dom";
 import * as actions from "../actions/actions";
@@ -21,10 +21,7 @@ const actionCreators = {
 };
 
 const App = ({ addLatestStories, addStory, setBranchStatus }) => {
-  const [requestStatus, setRequestStatus] = useState("fetching");
-
   useEffect(() => {
-    setRequestStatus("fetching");
     const getStories = async () => {
       const latestStoriesIDs = await getNewStories(); // production
       addLatestStories({ latestStoriesIDs: latestStoriesIDs.slice(0, 100) }); // production
@@ -34,7 +31,7 @@ const App = ({ addLatestStories, addStory, setBranchStatus }) => {
       //addLatestStories({ latestStoriesIDs: storiesIDs }); // development
       //addStory({ stories }); // development
     };
-    getStories().then(() => setRequestStatus("finished"));
+    getStories().then(() => {});
   }, [addLatestStories, addStory, setBranchStatus]);
 
   const main = (
@@ -47,13 +44,7 @@ const App = ({ addLatestStories, addStory, setBranchStatus }) => {
   return (
     <Router basename="/">
       <Header />
-      {requestStatus === "fetching" ? (
-        <main>
-          <h2>LOADING</h2>
-        </main>
-      ) : (
-        main
-      )}
+      {main}
       <Footer />
     </Router>
   );

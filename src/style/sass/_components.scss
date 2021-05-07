@@ -139,3 +139,75 @@
   border: 1px solid $black;
 }
 /* BTN */
+
+/* SKELETON */
+.skeleton {
+  &-wrapper {
+    background-color: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  &-item {
+    display: flex;
+    flex-wrap: wrap;
+    > div {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      flex-basis: 100%;
+      max-width: 100%;
+    }
+  }
+
+  &-block {
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: placeHolderSkeleton;
+    animation-timing-function: linear;
+    animation-delay: 0.5s;
+    background-color: $gradient-base;
+    background-image: linear-gradient(90deg, $gradient-base 14.36%, #e8e8e8 56.29%, $gradient-base 100%);
+    background-repeat: no-repeat;
+    background-size: 244px 104px;
+    position: relative;
+    height: 17px;
+    border-radius: 10px;
+    width: 100%;
+    margin: 3px 6px 3px 0;
+  }
+  &-block-header {
+    height: 15px;
+  }
+  &-block-info {
+    height: 12px;
+  }
+  &-block-title {
+    margin-bottom: 15px;
+    margin-top: 47px;
+    padding-right: 5px;
+    padding-left: 5px;
+    text-align: center;
+    height: 29px;
+  }
+}
+
+@keyframes placeHolderSkeleton {
+  0% {
+    background-position: calc(0% - 300px) 0;
+  }
+
+  20% {
+    background-position: calc(0% - 300px) 0;
+  }
+
+  80% {
+    background-position: calc(100% + 300px) 0;
+  }
+
+  100% {
+    background-position: calc(100% + 300px) 0;
+  }
+}
+/* SKELETON */

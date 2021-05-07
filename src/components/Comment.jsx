@@ -75,28 +75,56 @@ const Comment = ({ commentID, changeBranchStatus, ui }) => {
   const btnState =
     !ui.commentBranch[comment.id] || ui.commentBranch[comment.id] === "closed";
 
+  const fetchingStatus = requestStatus === "fetching";
+
+  const renderHeader = () =>
+    !comment.by ? (
+      <div
+        className="skeleton-block skeleton-block-header"
+        style={{ maxWidth: "300px" }}
+      >
+        {" "}
+      </div>
+    ) : (
+      <>
+        <span>By: </span>
+        {comment.by}
+        <span> Posted: </span>
+        {timestampToTime(comment.time)}
+      </>
+    );
+
+  const renderText = () => {
+    if (comment.deleted) {
+      return <h4>[commentary deleted]</h4>;
+    }
+    if (comment.text) {
+      return (
+        <div
+          className="comment-text"
+          dangerouslySetInnerHTML={createMarkup()}
+        />
+      );
+    }
+    return (
+      <div className="comment-text">
+        <div className="skeleton-block"> </div>
+        <div className="skeleton-block"> </div>
+        <div className="skeleton-block"> </div>
+      </div>
+    );
+  };
+
   return (
     comment && (
       <article className="comment">
-        <div className="comment-info">
-          <span>By: </span>
-          {comment.by}
-          <span> Posted: </span>
-          {timestampToTime(comment.time)}
-        </div>
-        {comment.deleted ? (
-          <h4>[commentary deleted]</h4>
-        ) : (
-          <div
-            className="comment-text"
-            dangerouslySetInnerHTML={createMarkup()}
-          />
-        )}
+        <div className="comment-info">{renderHeader()}</div>
+        {renderText()}
         {comment.kids ? (
           <button
             className="button button-animated button-comment"
             onClick={handleChangeBranchStatus}
-            disabled={requestStatus === "fetching"}
+            disabled={fetchingStatus}
           >
             <span>
               <span>{btnState ? "Show replies" : "Hide replies"}</span>

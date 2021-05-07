@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getItem } from "../services/hacker-news-api";
-import Placeholder from "./Placeholder";
+import StoryPreviewPlaceholder from "./StoryPreviewPlaceholder";
 import { timestampToTime } from "../utils/normalization";
 
 const StoryPreview = ({ id }) => {
@@ -18,7 +18,7 @@ const StoryPreview = ({ id }) => {
   }, [id]);
 
   return !story || requestStatus === "fetching" ? (
-    <Placeholder />
+    <StoryPreviewPlaceholder />
   ) : (
     <article className="story-preview">
       <Link className="link" to={`/${story.id}`}>
