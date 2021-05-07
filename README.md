@@ -2,7 +2,7 @@
 
 [Full task description in "avito.tech" repository](https://github.com/avito-tech/sx-frontend-trainee-assignment)
 
-###Short description:
+### Short description:
 
 - interface for [Hacker News](https://news.ycombinator.com/) API
 - comments, and the list of the latest news is automatically updating once in a minute
